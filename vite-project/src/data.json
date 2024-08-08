@@ -1,0 +1,29 @@
+[
+    {
+        "possesseur": "Donner",
+        "libelle": "Voiture",
+        "valeur_initiale": 20000,
+        "datedebut": "2020-01-01",
+        "datefin": "2025-01-01",
+        "amortissement": 0.1,
+        "valeur_actuelle": 18000
+    },
+    {
+        "possesseur": "Donner",
+        "libelle": "Ordinateur",
+        "valeur_initiale": 1000,
+        "datedebut": "2019-06-01",
+        "datefin": "2022-06-01",
+        "amortissement": 0.2,
+        "valeur_actuelle": 800
+    },
+    {
+        "possesseur": "Donner",
+        "libelle": "Immeuble",
+        "valeur_initiale": 500000,
+        "datedebut": "2015-01-01",
+        "datefin": "2030-01-01",
+        "amortissement": 0.05,
+        "valeur_actuelle": 475000
+    }
+]
