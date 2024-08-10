@@ -2,10 +2,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Container, Row, Col } from 'react-bootstrap';
 import './App.css';
-import Patrimoine from "../../models/Patrimoine.js"
-import Possession from "../../models/possessions/Possession.js"
-import Flux from "../../models/possessions/Flux.js"
-import data from "../../data/data.json"
+import Patrimoine from "../../Patrimoine.js"
+import Possession from "../../possessions/Possession.js"
+import Flux from "../../possessions/Flux.js"
+import data from "../../../data/data.json"
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
