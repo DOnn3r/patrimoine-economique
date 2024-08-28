@@ -5,7 +5,6 @@ import './App.css';
 import Patrimoine from "../../Patrimoine.js"
 import Possession from "../../possessions/Possession.js"
 import Flux from "../../possessions/Flux.js"
-import data from "../../../data/data.json"
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -13,7 +12,7 @@ function Possessions() {
   const [dateSelectionnee, setDateSelectionnee] = useState(new Date());
   const [patrimoine, setPatrimoine] = useState(null);
   const [valeurPatrimoine, setValeurPatrimoine] = useState(null);
-
+  const data = 
   useEffect(() => {
     const possessions = data
       .filter((item) => item.model === "Patrimoine")
