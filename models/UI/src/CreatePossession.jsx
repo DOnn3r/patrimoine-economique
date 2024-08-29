@@ -7,17 +7,44 @@ function CreatePossession() {
   const [libelle, setLibelle] = useState('');
   const [valeur, setValeur] = useState(0);
   const [dateDebut, setDateDebut] = useState(new Date());
-  const [taux, setTaux] = useState(0);
+  const [tauxAmortissement, setTauxAmortissement] = useState(0);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetch('/possession', {
+    if (!libelle || valeur <= 0 || tauxAmortissement < 0 || !dateDebut) {
+      setError('Please fill all fields correctly.');
+      return;
+    }
+    fetch('http://localhost:3000/possession', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ libelle, valeur, dateDebut, taux })
+      body: JSON.stringify({
+        libelle,
+        valeur: parseFloat(valeur),
+        dateDebut: dateDebut.toISOString(),
+        tauxAmortissement: parseFloat(tauxAmortissement)
+      })
     })
-      .then(response => response.json())
-      .then(data => console.log(data));
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setSuccess('Possession created successfully!');
+        setError('');
+        setLibelle('');
+        setValeur(0);
+        setDateDebut(new Date());
+        setTauxAmortissement(0);
+      })
+      .catch(error => {
+        setError('Error creating possession: ' + error.message);
+        setSuccess('');
+      });
   };
 
   return (
@@ -31,27 +58,40 @@ function CreatePossession() {
                 <th>Libellé</th>
                 <th>Valeur</th>
                 <th>Date début</th>
-                <th>Taux</th>
+                <th>Taux d'Amortissement</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
-                  <Form.Control type="text" value={libelle} onChange={(event) => setLibelle(event.target.value)} />
+                  <Form.Control
+                    type="text"
+                    value={libelle}
+                    onChange={(event) => setLibelle(event.target.value)}
+                  />
                 </td>
                 <td>
-                  <Form.Control type="number" value={valeur} onChange={(event) => setValeur(event.target.value)} />
+                  <Form.Control
+                    type="number"
+                    value={valeur}
+                    onChange={(event) => setValeur(Number(event.target.value))}
+                  />
                 </td>
                 <td>
                   <DatePicker
                     selected={dateDebut}
                     onChange={(date) => setDateDebut(date)}
                     dateFormat="yyyy-MM-dd"
+                    className="form-control"
                   />
                 </td>
                 <td>
-                  <Form.Control type="number" value={taux} onChange={(event) => setTaux(event.target.value)} />
+                  <Form.Control
+                    type="number"
+                    value={tauxAmortissement}
+                    onChange={(event) => setTauxAmortissement(Number(event.target.value))}
+                  />
                 </td>
                 <td>
                   <Button type="submit" onClick={handleSubmit}>Create</Button>
@@ -59,6 +99,8 @@ function CreatePossession() {
               </tr>
             </tbody>
           </Table>
+          {error && <div className="alert alert-danger mt-3">{error}</div>}
+          {success && <div className="alert alert-success mt-3">{success}</div>}
         </Col>
       </Row>
     </Container>

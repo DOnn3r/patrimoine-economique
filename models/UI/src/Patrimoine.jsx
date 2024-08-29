@@ -1,28 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import Chart from 'chart.js/auto'; // Import de Chart.js
 
 function Patrimoine() {
-  const [dateDebut, setDateDebut] = useState(new Date());
-  const [dateFin, setDateFin] = useState(new Date());
+  const [dateDebut, setDateDebut] = useState(new Date().toISOString().split('T')[0]);
+  const [dateFin, setDateFin] = useState(new Date().toISOString().split('T')[0]);
   const [jour, setJour] = useState(1);
-  const [valeurPatrimoine, setValeurPatrimoine] = useState(null);
+  const [valeurPatrimoine, setValeurPatrimoine] = useState([]);
+  const [chart, setChart] = useState(null);
 
+  // Fonction pour récupérer les données et mettre à jour le graphique
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/patrimoine/range', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'month', dateDebut, dateFin, jour })
+      });
+      const data = await response.json();
+      setValeurPatrimoine(data);
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      const ctx = document.getElementById('patrimoineChart').getContext('2d');
+      const newChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, index) => `Jour ${index + 1}`),
+          datasets: [{
+            label: 'Valeur Patrimoine',
+            data: data,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            x: { beginAtZero: true },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      setChart(newChart);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Utilisez useEffect pour récupérer les données initialement
   useEffect(() => {
-    fetch(`/patrimoine/range?type=month&dateDebut=${dateDebut.toISOString()}&dateFin=${dateFin.toISOString()}&jour=${jour}`)
-      .then(response => response.json())
-      .then(data => setValeurPatrimoine(data));
+    fetchData();
   }, [dateDebut, dateFin, jour]);
 
-  const handleDateDebutChange = (date) => {
-    setDateDebut(date);
+  const handleDateDebutChange = (e) => {
+    setDateDebut(e.target.value);
   };
 
-  const handleDateFinChange = (date) => {
-    setDateFin(date);
+  const handleDateFinChange = (e) => {
+    setDateFin(e.target.value);
   };
 
-  const handleJourChange = (jour) => {
-    setJour(jour);
+  const handleJourChange = (e) => {
+    setJour(parseInt(e.target.value, 10));
   };
 
   return (
@@ -33,44 +76,27 @@ function Patrimoine() {
         </Col>
       </Row>
       <Row className='mt-4'>
-        <Col md={6} style={{width : '100%'}}>
+        <Col md={6} style={{ width: '100%' }}>
           <Form className='text-center'>
             <Form.Group controlId="dateDebut">
               <Form.Label>Date début:</Form.Label>
-              <Form.Control type="date" value={dateDebut.toISOString()} onChange={handleDateDebutChange} />
+              <Form.Control type="date" value={dateDebut} onChange={handleDateDebutChange} />
             </Form.Group>
             <Form.Group controlId="dateFin">
               <Form.Label>Date fin:</Form.Label>
-              <Form.Control type="date" value={dateFin.toISOString()} onChange={handleDateFinChange} />
+              <Form.Control type="date" value={dateFin} onChange={handleDateFinChange} />
             </Form.Group>
             <Form.Group controlId="jour">
               <Form.Label>Jour:</Form.Label>
               <Form.Control type="number" value={jour} onChange={handleJourChange} />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="button" onClick={fetchData}>
               Valider
             </Button>
           </Form>
         </Col>
         <Col md={6}>
-          {valeurPatrimoine && (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Jour</th>
-                  <th>Valeur patrimoine</th>
-                </tr>
-              </thead>
-              <tbody>
-                {valeurPatrimoine.map((value, index) => (
-                  <tr key={index}>
-                    <td>Jour {index + 1}</td>
-                    <td>{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
+          <canvas id="patrimoineChart"></canvas>
         </Col>
       </Row>
     </Container>

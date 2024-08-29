@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^5.1.1",
-    "mocha": "^10.7.0"
+    "chart.js": "^4.4.4",
+    "mocha": "^10.7.0",
+    "react-chartjs-2": "^5.2.0"
   }
 }

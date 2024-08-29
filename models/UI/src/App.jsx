@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom'; // Import Link
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import Possessions from './Possession';
 import CreatePossession from './CreatePossession';
 import Patrimoine from './Patrimoine';
