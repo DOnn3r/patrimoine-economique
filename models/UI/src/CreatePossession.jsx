@@ -73,7 +73,7 @@ function CreatePossession() {
                 </td>
                 <td>
                   <Form.Control
-                    type="number"
+                    type="text"
                     value={valeur}
                     onChange={(event) => setValeur(Number(event.target.value))}
                   />

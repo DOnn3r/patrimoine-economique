@@ -8,7 +8,6 @@ import Possession from "../../possessions/Possession";
 import Patrimoine from "../../Patrimoine";
 import Flux from "../../possessions/Flux";
 
-
 function Possessions() {
   const [dateSelectionnee, setDateSelectionnee] = useState(new Date());
   const [patrimoine, setPatrimoine] = useState(null);
@@ -90,6 +89,7 @@ function Possessions() {
           ...prevPatrimoine,
           possessions: updatedPossessions
         }));
+        window.location.reload(); // Rafraîchit la page après l'édition
       })
       .catch(err => setError('Failed to update possession: ' + err.message));
   };
@@ -103,6 +103,7 @@ function Possessions() {
         const updatedPossessions = patrimoine.possessions.map(p =>
           p.libelle === libelle ? {
             ...p,
+            ...updatedPossession,
             dateFin: updatedPossession.dateFin ? new Date(updatedPossession.dateFin) : null
           } : p
         );
@@ -110,11 +111,10 @@ function Possessions() {
           ...prevPatrimoine,
           possessions: updatedPossessions
         }));
+        window.location.reload(); // Rafraîchit la page après la fermeture
       })
       .catch(err => setError('Failed to close possession: ' + err.message));
   };
-  
-
 
   const handleDelete = (libelle) => {
     fetch(`http://localhost:3000/possession/${libelle}`, {
@@ -125,6 +125,7 @@ function Possessions() {
           ...prevPatrimoine,
           possessions: prevPatrimoine.possessions.filter(p => p.libelle !== libelle)
         }));
+        window.location.reload(); // Rafraîchit la page après la suppression
       })
       .catch(err => setError('Failed to delete possession: ' + err.message));
   };

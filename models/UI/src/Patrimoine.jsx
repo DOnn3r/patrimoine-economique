@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import Chart from 'chart.js/auto'; // Import de Chart.js
+import Chart from 'chart.js/auto';
 
 function Patrimoine() {
   const [dateDebut, setDateDebut] = useState(new Date().toISOString().split('T')[0]);
   const [dateFin, setDateFin] = useState(new Date().toISOString().split('T')[0]);
   const [jour, setJour] = useState(1);
-  const [valeurPatrimoine, setValeurPatrimoine] = useState([]);
   const [chart, setChart] = useState(null);
 
-  // Fonction pour récupérer les données et mettre à jour le graphique
   const fetchData = async () => {
     try {
-      const response = await fetch('/patrimoine/range', {
+      const response = await fetch('http://localhost:3000/patrimoine/range', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'month', dateDebut, dateFin, jour })
       });
       const data = await response.json();
-      setValeurPatrimoine(data);
 
       if (chart) {
         chart.destroy();
@@ -51,7 +48,6 @@ function Patrimoine() {
     }
   };
 
-  // Utilisez useEffect pour récupérer les données initialement
   useEffect(() => {
     fetchData();
   }, [dateDebut, dateFin, jour]);
@@ -75,9 +71,9 @@ function Patrimoine() {
           <h1>Patrimoine</h1>
         </Col>
       </Row>
-      <Row className='mt-4'>
-        <Col md={6} style={{ width: '100%' }}>
-          <Form className='text-center'>
+      <Row className='mt-4' style={{width : "100%"}}>
+        <Col md={6}>
+          <Form>
             <Form.Group controlId="dateDebut">
               <Form.Label>Date début:</Form.Label>
               <Form.Control type="date" value={dateDebut} onChange={handleDateDebutChange} />
