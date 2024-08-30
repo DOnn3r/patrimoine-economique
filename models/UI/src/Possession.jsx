@@ -35,10 +35,10 @@ function Possessions() {
             return new Possession(
               possession.possesseur,
               possession.libelle,
-              parseFloat(possession.valeurConstante),
+              parseFloat(possession.valeur),
               dateDebut,
               dateFin,
-              possession.tauxAmortissement,
+              possession.tauxAmortissement
             );
           }
         });

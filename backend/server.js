@@ -101,23 +101,28 @@ app.post('/patrimoine/range', (req, res) => {
 
     possessions.forEach(p => {
       const dateDebutPossession = new Date(p.dateDebut);
-      const dateFinPossession = p.dateFin ? new Date(p.dateFin) : new Date();
-      
+      const dateFinPossession = p.dateFin ? new Date(p.dateFin) : endDate;
+
       if (currentDate >= dateDebutPossession.toISOString().split('T')[0] &&
           currentDate <= dateFinPossession.toISOString().split('T')[0]) {
-        
+
         let valeurPossession = p.valeur;
 
+        // Amortissement
         if (p.tauxAmortissement) {
           const nbJours = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24));
-          valeurPossession -= valeurPossession * (p.tauxAmortissement / 100) * (nbJours / 365);
+          const depreciation = valeurPossession * (p.tauxAmortissement / 100) * (nbJours / 365);
+          valeurPossession -= depreciation;
         }
-        
+
+        // Valeur constante
         if (p.valeurConstante && p.jour) {
-          const nbJours = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24)) + 1;
-          valeurPossession += p.valeurConstante * Math.min(nbJours, p.jour);
+          const nbJoursDepuisDebut = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24)) + 1;
+          if (nbJoursDepuisDebut >= p.jour) {
+            valeurPossession += p.valeurConstante;
+          }
         }
-        
+
         totalValue += valeurPossession;
       }
     });
@@ -127,6 +132,7 @@ app.post('/patrimoine/range', (req, res) => {
 
   res.json(result);
 });
+
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 function CreatePossession() {
   const [libelle, setLibelle] = useState('');
-  const [valeur, setValeur] = useState(0);
+  const [valeur, setValeur] = useState('');
   const [dateDebut, setDateDebut] = useState(new Date());
   const [tauxAmortissement, setTauxAmortissement] = useState(0);
   const [error, setError] = useState('');
@@ -13,7 +13,8 @@ function CreatePossession() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!libelle || valeur <= 0 || tauxAmortissement < 0 || !dateDebut) {
+    const parsedValeur = parseFloat(valeur);
+    if (!libelle || isNaN(parsedValeur) || tauxAmortissement < 0 || !dateDebut) {
       setError('Please fill all fields correctly.');
       return;
     }
@@ -22,7 +23,7 @@ function CreatePossession() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         libelle,
-        valeur: parseFloat(valeur),
+        valeur: parsedValeur,
         dateDebut: dateDebut.toISOString(),
         tauxAmortissement: parseFloat(tauxAmortissement)
       })
@@ -37,7 +38,7 @@ function CreatePossession() {
         setSuccess('Possession created successfully!');
         setError('');
         setLibelle('');
-        setValeur(0);
+        setValeur('');
         setDateDebut(new Date());
         setTauxAmortissement(0);
       })
@@ -75,7 +76,7 @@ function CreatePossession() {
                   <Form.Control
                     type="text"
                     value={valeur}
-                    onChange={(event) => setValeur(Number(event.target.value))}
+                    onChange={(event) => setValeur(event.target.value)}
                   />
                 </td>
                 <td>
