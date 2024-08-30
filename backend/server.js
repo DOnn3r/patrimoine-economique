@@ -103,19 +103,16 @@ app.post('/patrimoine/range', (req, res) => {
       const dateDebutPossession = new Date(p.dateDebut);
       const dateFinPossession = p.dateFin ? new Date(p.dateFin) : new Date();
       
-      // Assurez-vous que la possession est active à la date actuelle
       if (currentDate >= dateDebutPossession.toISOString().split('T')[0] &&
           currentDate <= dateFinPossession.toISOString().split('T')[0]) {
         
         let valeurPossession = p.valeur;
-        
-        // Appliquer l'amortissement si applicable
+
         if (p.tauxAmortissement) {
           const nbJours = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24));
           valeurPossession -= valeurPossession * (p.tauxAmortissement / 100) * (nbJours / 365);
         }
         
-        // Appliquer la valeur constante si applicable
         if (p.valeurConstante && p.jour) {
           const nbJours = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24)) + 1;
           valeurPossession += p.valeurConstante * Math.min(nbJours, p.jour);
