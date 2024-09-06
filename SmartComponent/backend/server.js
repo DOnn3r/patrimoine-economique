@@ -1,43 +1,18 @@
 const express = require('express');
 const json = require('body-parser').json;
 const cors = require('cors');
-
+const fs = require('fs');
+const path = require('path');
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(json());
 
-let possessions = [
-  {
-    "possesseur": { "nom": "John Doe" },
-    "libelle": "MacBook Pro",
-    "valeur": 4000000,
-    "dateDebut": "2023-12-25T00:00:00.000Z",
-    "dateFin": null,
-    "tauxAmortissement": 5
-  },
-  {
-    "possesseur": { "nom": "John Doe" },
-    "libelle": "Alternance",
-    "valeur": 0,
-    "dateDebut": "2022-12-31T21:00:00.000Z",
-    "dateFin": null,
-    "tauxAmortissement": null,
-    "jour": 1,
-    "valeurConstante": 500000
-  },
-  {
-    "possesseur": { "nom": "John Doe" },
-    "libelle": "Survie",
-    "valeur": 0,
-    "dateDebut": "2022-12-31T21:00:00.000Z",
-    "dateFin": null,
-    "tauxAmortissement": null,
-    "jour": 2,
-    "valeurConstante": -300000
-  }
-];
+const dataPath = path.join(__dirname, '../data/data.json');
+let data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+
+let possessions = data.find(entry => entry.model === 'Patrimoine').data.possessions;
 let patrimoine = {};
 
 app.get('/', (req, res) => {
@@ -66,12 +41,13 @@ app.put('/possession/:libelle/edit', (req, res) => {
   const updatedDetails = req.body;
   const possession = possessions.find(p => p.libelle === libelle);
   if (possession) {
-    Object.assign(possession, updatedDetails);
+    Object.assign(possession, updatedDetails);  // Permet la mise à jour du libellé
     res.json(possession);
   } else {
     res.status(404).send('Possession not found');
   }
 });
+
 
 app.post('/possession/:libelle/close', (req, res) => {
   const { libelle } = req.params;
@@ -108,14 +84,12 @@ app.post('/patrimoine/range', (req, res) => {
 
         let valeurPossession = p.valeur;
 
-        // Amortissement
         if (p.tauxAmortissement) {
           const nbJours = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24));
           const depreciation = valeurPossession * (p.tauxAmortissement / 100) * (nbJours / 365);
           valeurPossession -= depreciation;
         }
 
-        // Valeur constante
         if (p.valeurConstante && p.jour) {
           const nbJoursDepuisDebut = Math.floor((new Date(currentDate) - dateDebutPossession) / (1000 * 60 * 60 * 24)) + 1;
           if (nbJoursDepuisDebut >= p.jour) {
@@ -132,7 +106,6 @@ app.post('/patrimoine/range', (req, res) => {
 
   res.json(result);
 });
-
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

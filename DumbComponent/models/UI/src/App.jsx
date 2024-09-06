@@ -12,8 +12,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Possessions />} />
-        <Route path="/patrimoine" element={<Patrimoine />} />
         <Route path="/create" element={<CreatePossession />} />
+        <Route path="/patrimoine" element={<Patrimoine />} />
       </Routes>
     </BrowserRouter>
     </div>

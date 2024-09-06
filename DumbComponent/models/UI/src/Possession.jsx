@@ -69,30 +69,33 @@ function Possessions() {
   };
 
   const handleEdit = (libelle) => {
-    const newValue = prompt("Enter new value for possession:");
-    fetch(`http://localhost:3000/possession/${libelle}/edit`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ valeur: parseFloat(newValue) })
-    })
-      .then(res => res.json())
-      .then(updatedPossession => {
-        const updatedPossessions = patrimoine.possessions.map(p =>
-          p.libelle === libelle ? {
-            ...p,
-            ...updatedPossession,
-            dateDebut: new Date(updatedPossession.dateDebut),
-            dateFin: updatedPossession.dateFin ? new Date(updatedPossession.dateFin) : null
-          } : p
-        );
-        setPatrimoine(prevPatrimoine => ({
-          ...prevPatrimoine,
-          possessions: updatedPossessions
-        }));
-        window.location.reload();
+    const newLibelle = prompt("Enter new name for possession:");
+    if (newLibelle) {
+      fetch(`http://localhost:3000/possession/${libelle}/edit`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ libelle: newLibelle })  // Envoyer le nouveau libellé
       })
-      .catch(err => setError('Failed to update possession: ' + err.message));
+        .then(res => res.json())
+        .then(updatedPossession => {
+          const updatedPossessions = patrimoine.possessions.map(p =>
+            p.libelle === libelle ? {
+              ...p,
+              libelle: updatedPossession.libelle,  // Mettre à jour le libellé
+              dateDebut: new Date(updatedPossession.dateDebut),
+              dateFin: updatedPossession.dateFin ? new Date(updatedPossession.dateFin) : null
+            } : p
+          );
+          setPatrimoine(prevPatrimoine => ({
+            ...prevPatrimoine,
+            possessions: updatedPossessions
+          }));
+          window.location.reload();
+        })
+        .catch(err => setError('Failed to update possession: ' + err.message));
+    }
   };
+  
 
   const handleClose = (libelle) => {
     fetch(`http://localhost:3000/possession/${libelle}/close`, {
@@ -152,8 +155,8 @@ function Possessions() {
                           <td>{possession.tauxAmortissement}</td>
                           <td>{possession instanceof Possession || possession instanceof Flux ? possession.getValeur(dateSelectionnee).toFixed(2) : 'N/A'|| possession.valeurConstante}</td>
                           <td>
-                            <Button variant="warning" onClick={() => handleEdit(possession.libelle)}>Edit</Button>
-                            <Button variant="info" onClick={() => handleClose(possession.libelle)}>Close</Button>
+                            <Button variant = "none" style={{backgroundColor : "green", color: "white", marginRight:"4px"}} onClick={() => handleEdit(possession.libelle)}>Edit</Button>
+                            <Button variant = "none" style={{backgroundColor : "red", color: "white"}} onClick={() => handleClose(possession.libelle)}>Close</Button>
                           </td>
                         </tr>
                       );

@@ -18,10 +18,10 @@ function MyNavbar() {
                 <Link to="/">Possessions</Link>
               </NavItem>
               <NavItem className='me-5' onClick={handleRefresh}>
-                <Link to="/patrimoine">Patrimoine</Link>
+                <Link to="/create">CreatePossession</Link>
               </NavItem>
               <NavItem className='me-5' onClick={handleRefresh}>
-                <Link to="/create">CreatePossession</Link>
+                <Link to="/patrimoine">Patrimoine</Link>
               </NavItem>
             </Nav>
           </Navbar.Collapse>
