@@ -18,7 +18,7 @@ function CreatePossession() {
       setError('Please fill all fields correctly.');
       return;
     }
-    fetch('http://localhost:3000/possession', {
+    fetch('https://patrimoine-economique-taij.onrender.com/possession', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

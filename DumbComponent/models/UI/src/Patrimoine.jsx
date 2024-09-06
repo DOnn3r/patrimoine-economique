@@ -10,7 +10,7 @@ function Patrimoine() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/patrimoine/range', {
+      const response = await fetch('https://patrimoine-economique-taij.onrender.com/patrimoine/range', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dateDebut, dateFin })

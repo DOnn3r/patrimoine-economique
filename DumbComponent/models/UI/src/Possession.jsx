@@ -16,7 +16,7 @@ function Possessions() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/possession')
+    fetch('https://patrimoine-economique-taij.onrender.com/possession')
       .then(res => res.json())
       .then(data => {
         const possessions = data.map((possession) => {
@@ -71,7 +71,7 @@ function Possessions() {
   const handleEdit = (libelle) => {
     const newLibelle = prompt("Enter new name for possession:");
     if (newLibelle) {
-      fetch(`http://localhost:3000/possession/${libelle}/edit`, {
+      fetch(`https://patrimoine-economique-taij.onrender.com/possession/${libelle}/edit`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ libelle: newLibelle })  // Envoyer le nouveau libellé
@@ -98,7 +98,7 @@ function Possessions() {
   
 
   const handleClose = (libelle) => {
-    fetch(`http://localhost:3000/possession/${libelle}/close`, {
+    fetch(`https://patrimoine-economique-taij.onrender.com/possession/${libelle}/close`, {
       method: 'POST'
     })
       .then(res => res.json())
@@ -155,8 +155,8 @@ function Possessions() {
                           <td>{possession.tauxAmortissement}</td>
                           <td>{possession instanceof Possession || possession instanceof Flux ? possession.getValeur(dateSelectionnee).toFixed(2) : 'N/A'|| possession.valeurConstante}</td>
                           <td>
-                            <Button variant = "none" style={{backgroundColor : "green", color: "white", marginRight:"4px"}} onClick={() => handleEdit(possession.libelle)}>Edit</Button>
-                            <Button variant = "none" style={{backgroundColor : "red", color: "white"}} onClick={() => handleClose(possession.libelle)}>Close</Button>
+                            <Button variant = "none" style={{backgroundColor : "green", color:"white", marginRight: "4px"}} onClick={() => handleEdit(possession.libelle)}>Edit</Button>
+                            <Button variant = "none" style={{backgroundColor : "red", color:"white"}} onClick={() => handleClose(possession.libelle)}>Close</Button>
                           </td>
                         </tr>
                       );
