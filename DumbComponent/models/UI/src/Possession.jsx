@@ -74,14 +74,14 @@ function Possessions() {
       fetch(`https://patrimoine-economique-taij.onrender.com/possession/${libelle}/edit`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ libelle: newLibelle })  // Envoyer le nouveau libellé
+        body: JSON.stringify({ libelle: newLibelle })
       })
         .then(res => res.json())
         .then(updatedPossession => {
           const updatedPossessions = patrimoine.possessions.map(p =>
             p.libelle === libelle ? {
               ...p,
-              libelle: updatedPossession.libelle,  // Mettre à jour le libellé
+              libelle: updatedPossession.libelle,
               dateDebut: new Date(updatedPossession.dateDebut),
               dateFin: updatedPossession.dateFin ? new Date(updatedPossession.dateFin) : null
             } : p
